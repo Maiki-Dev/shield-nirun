@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { Manrope } from "next/font/google";
+import Script from "next/script";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LangProvider } from "@/components/lang-provider";
 import { Navbar } from "@/components/layout/navbar";
@@ -48,6 +49,17 @@ export default function LocaleLayout({ children, params }: { children: React.Rea
   return (
     <html lang={lang} suppressHydrationWarning className={manrope.variable}>
       <body>
+        <Script id="google-tag-init" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { window.dataLayer.push(arguments); }
+            gtag('js', new Date());
+          `}
+        </Script>
+        <Script
+          src="https://www.googletagmanager.com/gtm.js?id=GTM-WX2NP9WC"
+          strategy="beforeInteractive"
+        />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <LangProvider lang={lang}>
             <SmoothScroll />
