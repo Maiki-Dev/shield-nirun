@@ -6,7 +6,8 @@ import { ApplicationForm } from "@/components/careers/application-form";
 import { positionsFor } from "@/lib/careers";
 import { alternates, tr, type Lang } from "@/lib/i18n";
 
-export const revalidate = 300;
+// Query the cached job listings at request time so builds can run before PostgreSQL is available.
+export const dynamic = "force-dynamic";
 
 export function generateMetadata({ params }: { params: { lang: Lang } }): Metadata {
   const t = tr(params.lang);

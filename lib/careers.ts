@@ -16,7 +16,9 @@ export const openPositions = unstable_cache(
   { tags: [CAREERS_TAG], revalidate: 300 },
 );
 
-export async function positionsFor(lang: Lang) {
+type LocalizedPosition = { id: string; title: string; description: string };
+
+export async function positionsFor(lang: Lang): Promise<LocalizedPosition[]> {
   const t = tr(lang);
   return (await openPositions()).map((p) => ({ id: p.id, title: t(p.titleMn, p.titleEn), description: t(p.descriptionMn, p.descriptionEn) }));
 }
