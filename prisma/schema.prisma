@@ -1,0 +1,264 @@
+// Shield Nirun website + admin dashboard.
+// Bilingual fields are stored side by side (…Mn / …En), matching the site's t("мн", "en") convention.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN  // everything, including users
+  EDITOR // requests, content, media
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         Role      @default(EDITOR)
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  lastLoginAt  DateTime?
+  sessions     Session[]
+  notes        LeadNote[]
+  assigned     Lead[]    @relation("assignee")
+}
+
+/// Opaque session; only the SHA-256 of the cookie token is stored.
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userAgent String?
+
+  @@index([userId])
+}
+
+enum LeadSource {
+  CONTACT // contact page form
+  DEMO    // products page "free survey" form
+}
+
+enum LeadStatus {
+  NEW
+  IN_PROGRESS
+  DONE
+  SPAM
+}
+
+model Lead {
+  id           String     @id @default(cuid())
+  source       LeadSource
+  status       LeadStatus @default(NEW)
+  name         String
+  organization String?
+  phone        String
+  email        String?
+  interests    String[]   // solution / service values chosen in the form
+  scale        String?
+  message      String?
+  locale       String     @default("mn")
+  ip           String?
+  userAgent    String?
+  assigneeId   String?
+  assignee     User?      @relation("assignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  notes        LeadNote[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model LeadNote {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  authorId  String?
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  body      String
+  createdAt DateTime @default(now())
+
+  @@index([leadId])
+}
+
+/// Single-row site settings (id = "site").
+model SiteSettings {
+  id               String   @id @default("site")
+  phone            String
+  email            String
+  building         String
+  districtMn       String
+  districtEn       String
+  cityMn           String
+  cityEn           String
+  mapUrl           String
+  lat              Float
+  lng              Float
+  brochureParking  String?  // URL of the PDF (/files/... or /media/...)
+  brochureHoa      String?
+  updatedAt        DateTime @updatedAt
+}
+
+model Leader {
+  id            String   @id @default(cuid())
+  nameMn        String
+  nameEn        String
+  roleMn        String
+  roleEn        String
+  photo         String
+  photoPosition String   @default("center 30%")
+  /// Who this person reports to (null = top of the org chart). Drives the tree on the About page.
+  parentId      String?
+  parent        Leader?  @relation("orgChart", fields: [parentId], references: [id], onDelete: SetNull)
+  reports       Leader[] @relation("orgChart")
+  sortOrder     Int      @default(0)
+  visible       Boolean  @default(true)
+  updatedAt     DateTime @updatedAt
+}
+
+model Service {
+  id        String   @id @default(cuid())
+  icon      String   // lucide icon key, see lib/admin/icons.ts
+  titleMn   String
+  titleEn   String
+  textMn    String
+  textEn    String
+  sortOrder Int      @default(0)
+  visible   Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}
+
+model Faq {
+  id         String   @id @default(cuid())
+  questionMn String
+  questionEn String
+  answerMn   String
+  answerEn   String
+  shieldPlus Boolean  @default(false) // hidden until the Shield+ launch
+  sortOrder  Int      @default(0)
+  visible    Boolean  @default(true)
+  updatedAt  DateTime @updatedAt
+}
+
+/// Uploaded file; stored under UPLOAD_DIR and served at /media/<storedName>.
+model Media {
+  id         String   @id @default(cuid())
+  storedName String   @unique
+  original   String
+  mime       String
+  size       Int
+  alt        String?
+  uploadedBy String?
+  createdAt  DateTime @default(now())
+}
+
+// ───────────────────────── News ─────────────────────────
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+/// News article. Mongolian is required; English is optional (English site lists only posts with titleEn).
+model Post {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  titleMn     String
+  titleEn     String?
+  excerptMn   String
+  excerptEn   String?
+  bodyMn      String     // light Markdown, rendered safely (lib/markdown.ts)
+  bodyEn      String?
+  cover       String?    // /media/... image
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+  authorName  String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([status, publishedAt])
+}
+
+// ───────────────────────── Careers ─────────────────────────
+
+model JobPosition {
+  id            String           @id @default(cuid())
+  titleMn       String
+  titleEn       String
+  descriptionMn String
+  descriptionEn String
+  open          Boolean          @default(true)
+  sortOrder     Int              @default(0)
+  applications  JobApplication[]
+  updatedAt     DateTime         @updatedAt
+}
+
+enum ApplicationStatus {
+  NEW
+  REVIEWING
+  INTERVIEW
+  HIRED
+  REJECTED
+}
+
+/// Job application. The CV is stored privately (never public) and downloaded only by signed-in staff.
+model JobApplication {
+  id            String            @id @default(cuid())
+  positionId    String?
+  position      JobPosition?      @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  positionTitle String            // snapshot, survives position edits/deletion
+  name          String
+  phone         String
+  email         String?
+  birthYear     Int?
+  address       String?
+  experience    String?
+  message       String?
+  cvFile        String?           // stored name in PRIVATE_UPLOAD_DIR
+  cvOriginal    String?
+  status        ApplicationStatus @default(NEW)
+  staffNote     String?
+  locale        String            @default("mn")
+  ip            String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([status, createdAt])
+}
+
+// ───────────────────────── Surveys ─────────────────────────
+
+/// Questionnaire built in the admin. `questions` is a JSON array, see lib/surveys.ts.
+model Survey {
+  id            String           @id @default(cuid())
+  slug          String           @unique
+  titleMn       String
+  titleEn       String?
+  descriptionMn String?
+  descriptionEn String?
+  questions     Json
+  active        Boolean          @default(false)
+  responses     SurveyResponse[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model SurveyResponse {
+  id        String   @id @default(cuid())
+  surveyId  String
+  survey    Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  answers   Json     // { [questionId]: string | string[] | number }
+  locale    String   @default("mn")
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([surveyId, createdAt])
+}
