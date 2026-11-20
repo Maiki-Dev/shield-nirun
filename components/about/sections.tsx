@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { CircleCheck, Eye, Flag, ShieldCheck } from "lucide-react";
+import { CircleCheck, Eye, Flag, Quote, ShieldCheck } from "lucide-react";
 import { PortraitPreview } from "@/components/about/portrait-preview";
 import { Reveal } from "@/components/ui/reveal";
 import { PageHero, Sheet, SheetHeading } from "@/components/ui/page-hero";
@@ -110,21 +110,60 @@ function Purpose({ lang }: P) {
   const { VISION, MISSION } = aboutContent(lang);
   return (
     <section className="container-x pt-24">
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <Reveal variant="tilt-a" className="dark relative overflow-hidden rounded-[30px] bg-[#0B1724] p-8 text-ink sm:p-10">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        <Reveal variant="tilt-a" className="dark relative overflow-hidden rounded-[30px] bg-[#0B1724] p-8 text-ink sm:p-10 lg:col-span-5">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_70%_at_100%_0%,rgba(0,180,216,0.22)_0%,rgba(0,180,216,0)_70%)]" />
           <Eye className="relative h-8 w-8 text-brand-light" />
           <span className="relative mt-6 block text-label-sm font-bold uppercase tracking-widest text-brand-light">{t("Алсын хараа", "Vision")}</span>
           <h3 className="relative mt-2 text-[clamp(1.6rem,3vw,2.3rem)] font-semibold leading-tight tracking-tight text-white">{VISION.title}</h3>
           <p className="relative mt-4 text-body-lg text-slate-400">{VISION.text}</p>
         </Reveal>
-        <Reveal variant="tilt-b" className="card p-8 sm:p-10">
+        <Reveal variant="tilt-b" className="card p-8 sm:p-10 lg:col-span-7">
           <Flag className="h-8 w-8 text-accent" />
-          <span className="mt-6 block text-label-sm font-bold uppercase tracking-widest text-accent">{t("Эрхэм зорилго", "Mission")}</span>
-          <h3 className="mt-2 text-[clamp(1.6rem,3vw,2.3rem)] font-semibold leading-tight tracking-tight text-ink">{MISSION.title}</h3>
-          <p className="mt-4 text-body-lg text-muted">{MISSION.text}</p>
+          <span className="mt-6 block text-label-sm font-bold uppercase tracking-widest text-accent">{t("Бидний эрхэм зорилго", "Our mission")}</span>
+          <h3 className="mt-2 text-[clamp(1.4rem,2.4vw,1.9rem)] font-semibold leading-tight tracking-tight text-ink">{MISSION.title}</h3>
+          <div className="mt-5 flex flex-col gap-4 text-body-md text-muted">
+            {MISSION.paragraphs.map((p) => (
+              <p key={p}>{p}</p>
+            ))}
+          </div>
         </Reveal>
       </div>
+    </section>
+  );
+}
+
+function FounderMessage({ lang }: P) {
+  const t = tr(lang);
+  const { FOUNDER } = aboutContent(lang);
+  return (
+    <section className="container-x pt-24">
+      <Reveal variant="zoom" className="card grid grid-cols-1 items-center gap-8 overflow-hidden p-6 sm:p-10 md:grid-cols-12 md:gap-12">
+        <div className="md:col-span-5">
+          <div className="overflow-hidden rounded-[24px]">
+            <img
+              src={FOUNDER.photo}
+              alt={FOUNDER.name}
+              width={923}
+              height={991}
+              loading="lazy"
+              className="aspect-square w-full object-cover md:aspect-[4/5]"
+              style={{ objectPosition: "center 25%" }}
+            />
+          </div>
+        </div>
+        <figure className="md:col-span-7">
+          <span className="eyebrow">{t("Үүсгэн байгуулагчийн үг", "Founder's message")}</span>
+          <Quote className="mt-6 h-10 w-10 text-accent" aria-hidden />
+          <blockquote className="mt-4 text-[clamp(1.25rem,2.2vw,1.75rem)] font-semibold leading-snug tracking-tight text-ink">
+            {FOUNDER.quote}
+          </blockquote>
+          <figcaption className="mt-8 flex flex-col">
+            <span className="text-headline-sm font-bold text-ink">{FOUNDER.name}</span>
+            <span className="text-body-sm text-muted">{FOUNDER.role}</span>
+          </figcaption>
+        </figure>
+      </Reveal>
     </section>
   );
 }
@@ -215,6 +254,7 @@ export function AboutPage({ lang }: P) {
         <Statement lang={lang} />
         <Technology lang={lang} />
         <Purpose lang={lang} />
+        <FounderMessage lang={lang} />
         <Values lang={lang} />
         <Leadership lang={lang} />
         <CtaZoom

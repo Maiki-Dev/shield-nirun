@@ -27,11 +27,36 @@ export function aboutContent(lang: Lang) {
     ),
   };
 
+  /** Official mission statement supplied by the company (English is a translation to review). */
   const MISSION = {
-    title: t("Найдвартай, Тайван Орчныг Бүрдүүлэх", "Creating Safe, Calm Environments"),
-    text: t(
-      "Технологи болон мэргэшсэн хамгаалалтыг хослуулж, харилцагчдынхаа хүмүүс, хөрөнгө, барилга байгууламжийг найдвартай хамгаалах.",
-      "To reliably protect our clients' people, assets and buildings by combining technology with professional security.",
+    title: t(
+      "Хүн, байгууллага, нийгмийн аюулгүй байдлыг хамгаалах нь бидний эрхэм зорилго юм.",
+      "Our mission is to protect the safety and security of people, organisations and society.",
+    ),
+    paragraphs: [
+      t(
+        "Бид мэргэжлийн боловсон хүчин, орчин үеийн технологи, нэгдсэн удирдлага, эрсдэлийн урьдчилан сэргийлэх шийдэлд тулгуурлан харилцагчдынхаа амь нас, эд хөрөнгө, бизнесийн үйл ажиллагаа, үнэ цэнтэй хөрөнгийг найдвартай хамгаална.",
+        "Drawing on professional staff, modern technology, integrated management and preventive risk solutions, we reliably protect our clients' lives, property, business operations and valuable assets.",
+      ),
+      t(
+        "Бид аюулгүй байдлыг зөвхөн эрсдэл үүссэний дараа хариу арга хэмжээ авах бус, эрсдэлийг урьдчилан таньж, таслан зогсоож, тогтвортой орчныг бүрдүүлэх цогц тогтолцоо гэж үздэг.",
+        "We see security not merely as responding after a risk has arisen, but as a comprehensive system that identifies risks in advance, stops them, and creates a stable environment.",
+      ),
+      t(
+        "Бидний зорилго бол аюулгүй байдлын салбарт мэргэжлийн стандарт, хариуцлага, итгэлцэл, технологийн шинэчлэлийг нэвтрүүлж, Монгол Улсын аюулгүй байдлын хөгжилд бодит хувь нэмэр оруулах явдал юм.",
+        "Our goal is to bring professional standards, accountability, trust and technological innovation to the security sector, and to make a real contribution to the development of security in Mongolia.",
+      ),
+    ],
+  };
+
+  /** Founder's message, signed by Ch. Anar (photo is the confirmed founder portrait). */
+  const FOUNDER = {
+    name: t("Ч. Анар", "Ch. Anar"),
+    role: t("Үүсгэн байгуулагч", "Founder"),
+    photo: "/images/chairman.webp",
+    quote: t(
+      "Бид аюулгүй байдлыг зөвхөн үйлчилгээ бус, хүн бүрийн амар тайван амьдрал, байгууллага бүрийн тогтвортой үйл ажиллагааны үндэс гэж үздэг. Энэ итгэл үнэмшил бол Shield Nirun-ийг үүсгэн байгуулсан гол шалтгаан юм.",
+      "We see security not just as a service, but as the foundation of every person's peace of mind and every organisation's stable operation. This conviction is the main reason Shield Nirun was founded.",
     ),
   };
 
@@ -66,5 +91,5 @@ export function aboutContent(lang: Lang) {
     { icon: Sprout, no: "04", title: t("Нийгмийн хариуцлага", "Social Responsibility"), text: t("Аюулгүй, тайван орчныг нийгэмдээ бүтээх.", "Building a safe, calm environment for our community.") },
   ];
 
-  return { ABOUT_HERO, VISION, MISSION, TECH_PILLARS, VALUES };
+  return { ABOUT_HERO, VISION, MISSION, FOUNDER, TECH_PILLARS, VALUES };
 }
