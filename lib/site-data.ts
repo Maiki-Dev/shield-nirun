@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { CONTACT } from "@/lib/content/site";
 import { leaders as codeLeaders } from "@/lib/content/people";
 import { productsContent } from "@/lib/content/products";
+import { SERVICE_SLUGS } from "@/lib/content/service-details";
 import { serviceIcon } from "@/lib/admin/icons";
 import { tr, type Lang } from "@/lib/i18n";
 
@@ -17,7 +18,7 @@ export interface SiteData {
     brochureParking: string | null; brochureHoa: string | null;
   };
   leaders: { id: string; parentId: string | null; name: Bi; role: Bi; photo: string; photoPosition: string }[];
-  services: { icon: string; title: Bi; text: Bi }[];
+  services: { id: string; icon: string; title: Bi; text: Bi; images: string[] }[];
   faqs: { q: Bi; a: Bi; shieldPlus: boolean }[];
 }
 
@@ -25,7 +26,6 @@ export interface SiteData {
 function fallback(): SiteData {
   const [pmn, pen] = [productsContent("mn"), productsContent("en")];
   const [lmn, len] = [codeLeaders("mn"), codeLeaders("en")];
-  const keys = ["cctv", "door", "drone", "shield", "network", "wrench"];
   return {
     settings: {
       phone: CONTACT.phone, email: CONTACT.email, building: CONTACT.building,
@@ -34,7 +34,7 @@ function fallback(): SiteData {
       brochureParking: "/files/shield-nirun-smart-parking.pdf", brochureHoa: "/files/shield-nirun-smart-hoa.pdf",
     },
     leaders: lmn.map((l, i) => ({ id: `code-${i}`, parentId: i ? `code-${i - 1}` : null, name: { mn: l.name ?? "", en: len[i].name ?? "" }, role: { mn: l.role, en: len[i].role }, photo: l.photo, photoPosition: l.photoPosition ?? "center 30%" })),
-    services: pmn.SERVICES.map((s, i) => ({ icon: keys[i] ?? "shield", title: { mn: s.title, en: pen.SERVICES[i].title }, text: { mn: s.text, en: pen.SERVICES[i].text } })),
+    services: pmn.SERVICES.map((s, i) => ({ id: s.key, icon: s.key, title: { mn: s.title, en: pen.SERVICES[i].title }, text: { mn: s.text, en: pen.SERVICES[i].text }, images: [] })),
     faqs: pmn.FAQS.map((f, i) => ({ q: { mn: f.q, en: pen.FAQS[i].q }, a: { mn: f.a, en: pen.FAQS[i].a }, shieldPlus: !!f.shieldPlus })),
   };
 }
@@ -54,11 +54,11 @@ const load = unstable_cache(
         mapUrl: s.mapUrl, lat: s.lat, lng: s.lng, brochureParking: s.brochureParking, brochureHoa: s.brochureHoa,
       },
       leaders: leaders.map((l) => ({ id: l.id, parentId: l.parentId, name: { mn: l.nameMn, en: l.nameEn }, role: { mn: l.roleMn, en: l.roleEn }, photo: l.photo, photoPosition: l.photoPosition })),
-      services: services.map((v) => ({ icon: v.icon, title: { mn: v.titleMn, en: v.titleEn }, text: { mn: v.textMn, en: v.textEn } })),
+      services: services.map((v) => ({ id: v.id, icon: v.icon, title: { mn: v.titleMn, en: v.titleEn }, text: { mn: v.textMn, en: v.textEn }, images: v.images })),
       faqs: faqs.map((f) => ({ q: { mn: f.questionMn, en: f.questionEn }, a: { mn: f.answerMn, en: f.answerEn }, shieldPlus: f.shieldPlus })),
     };
   },
-  ["site-data-v2"],
+  ["site-data-v3"],
   { tags: [SITE_TAG], revalidate: 300 },
 );
 
@@ -134,7 +134,16 @@ export async function getLeaders(lang: Lang) {
 
 export async function getServices(lang: Lang) {
   const t = tr(lang);
-  return (await getSiteData()).services.map((s) => ({ icon: serviceIcon(s.icon), title: t(s.title.mn, s.title.en), text: t(s.text.mn, s.text.en) }));
+  const usedSlugs = new Set<string>();
+  return (await getSiteData()).services.map((s) => {
+    const knownSlug = SERVICE_SLUGS[s.icon];
+    const slug = knownSlug && !usedSlugs.has(knownSlug) ? knownSlug : `custom-${s.id}`;
+    usedSlugs.add(slug);
+    return {
+      id: s.id, slug, key: s.icon, icon: serviceIcon(s.icon), images: s.images,
+      title: t(s.title.mn, s.title.en), text: t(s.text.mn, s.text.en),
+    };
+  });
 }
 
 export async function getFaqs(lang: Lang) {

@@ -131,6 +131,7 @@ model Service {
   titleEn   String
   textMn    String
   textEn    String
+  images    String[] @default([])
   sortOrder Int      @default(0)
   visible   Boolean  @default(true)
   updatedAt DateTime @updatedAt

@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  BadgeCheck, BatteryCharging, Cctv, Cpu, DoorClosed, Gavel, Lock, QrCode, ReceiptText, Server, UserCheck, Zap, ScanLine, ChartColumn, Wrench, LayoutDashboard, Network, ShieldCheck,
+  BadgeCheck, BatteryCharging, Cctv, Code2, Cpu, DoorClosed, Gavel, Lock, QrCode, ReceiptText, Server, UserCheck, Zap, ScanLine, ChartColumn, Wrench, LayoutDashboard, Network, Pickaxe, ShieldCheck,
 } from "lucide-react";
 import { Drone } from "@/lib/icons";
 import { tr, type Lang } from "@/lib/i18n";
@@ -15,7 +15,7 @@ export interface Tier {
   includes: string[]; excludes?: string[];
 }
 export interface Faq { q: string; a: string; /** about a Shield+ product — hidden until launch */ shieldPlus?: boolean }
-export interface Service { icon: LucideIcon; title: string; text: string }
+export interface Service { key: string; icon: LucideIcon; title: string; text: string }
 
 /** Products page content (MN + EN side by side). Flagship-system copy comes from the brochures (see lib/content/systems.ts). */
 export function productsContent(lang: Lang) {
@@ -32,45 +32,59 @@ export function productsContent(lang: Lang) {
   /** Services Shield Nirun offers today (independent of the Shield+ launch). */
   const SERVICES: Service[] = [
     {
-      icon: Cctv, title: t("Хамгаалалтын камер суурилуулалт", "Security camera installation"),
+      key: "cctv", icon: Cctv, title: t("Хамгаалалтын камер суурилуулалт", "Security camera installation"),
       text: t(
         "Объектын онцлогт тохируулан камерын байршлыг тогтоож, AI ухаалаг камер болон бичлэгийн системийг угсарч тохируулна.",
         "We plan camera placement for your site, then install and configure AI smart cameras and the recording system.",
       ),
     },
     {
-      icon: DoorClosed, title: t("Нэвтрэх хяналт & турникет", "Access control & turnstiles"),
+      key: "door", icon: DoorClosed, title: t("Нэвтрэх хяналт & шалгалт", "Access control & turnstiles"),
       text: t(
         "Царай, карт, QR-аар нэвтрэх систем, турникет болон хаалганы контроллерийг суурилуулна.",
         "We install face, card and QR access systems, turnstiles and door controllers.",
       ),
     },
     {
-      icon: Drone, title: t("Дрон хяналт", "Drone monitoring"),
+      key: "drone", icon: Drone, title: t("Дрон хяналт", "Drone monitoring"),
       text: t(
         "Том талбай, периметрийг агаараас эргүүлж, нөхцөл байдлыг шуурхай үнэлнэ.",
         "Aerial patrols of large sites and perimeters with rapid situation assessment.",
       ),
     },
     {
-      icon: ShieldCheck, title: t("Биет харуул хамгаалалт", "On-site security guards"),
+      key: "shield", icon: ShieldCheck, title: t("Биет харуул хамгаалалт", "On-site security guards"),
       text: t(
         "Сургагдсан хамгаалалтын алба, эргүүл, төвлөрсөн хяналт болон шуурхай хариу арга хэмжээ.",
         "Trained security staff, patrols, central monitoring and rapid response.",
       ),
     },
     {
-      icon: Network, title: t("Сүлжээ, кабелийн угсралт", "Network & cabling"),
+      key: "network", icon: Network, title: t("Сүлжээ, кабелийн угсралт", "Network & cabling"),
       text: t(
         "Камер, хаалт, серверийн сүлжээний дэд бүтцийг угсарч, тасралтгүй ажиллагааг хангана.",
         "We build the network infrastructure for cameras, barriers and servers so everything stays online.",
       ),
     },
     {
-      icon: Wrench, title: t("Засвар үйлчилгээ & дэмжлэг", "Maintenance & support"),
+      key: "wrench", icon: Wrench, title: t("Засвар үйлчилгээ & дэмжлэг", "Maintenance & support"),
       text: t(
         "Системийг алсаас хянаж, тоног төхөөрөмжийн үзлэг, засвар үйлчилгээг тогтмол хийнэ.",
         "We monitor systems remotely and carry out regular equipment checks and maintenance.",
+      ),
+    },
+    {
+      key: "software", icon: Code2, title: t("Программ хангамж ба веб хөгжүүлэлт", "Software & web development"),
+      text: t(
+        "Байгууллагын вебсайт, дотоод удирдлагын систем болон ажлын урсгал автоматжуулах программ хангамж хөгжүүлнэ.",
+        "We build business websites, internal management systems and software that automates day-to-day workflows.",
+      ),
+    },
+    {
+      key: "mine", icon: Pickaxe, title: t("Mine Shield — Уул уурхайн хамгаалалт", "Mine Shield — Mining site security"),
+      text: t(
+        "Алслагдсан уурхай, ашигт малтмалын талбайд хээрийн бэлтгэлтэй хамгаалалтын баг, эргүүлийн автомашин, холбооны хэрэгслээр хамгаалалт үйлчилгээ үзүүлнэ.",
+        "Security for remote mines and mineral sites, with field-trained guard teams, patrol vehicles and radio communications.",
       ),
     },
   ];

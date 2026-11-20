@@ -92,14 +92,14 @@ async function Services({ lang }: P) {
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {SERVICES.map((sv, i) => (
-          <Reveal key={sv.title} delay={(i % 3) * 0.06} className="card card-hover flex flex-col gap-4 p-7">
-            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand/10 text-accent">
-              <sv.icon className="h-6 w-6" />
+          <Reveal key={sv.id} delay={(i % 3) * 0.06} className="card group relative flex flex-col gap-4 p-7 transition-[border-color,box-shadow] duration-300 hover:border-brand/30 hover:shadow-[0_16px_40px_rgba(11,25,44,0.10)]">
+            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand/10 text-accent transition-[background-color,transform] duration-300 group-hover:scale-105 group-hover:bg-brand/15">
+              <sv.icon className="h-6 w-6 transition-transform duration-300 group-hover:-translate-y-0.5" />
             </span>
             <h3 className="text-[1.25rem] font-semibold tracking-tight text-ink">{sv.title}</h3>
             <p className="flex-1 text-body-sm text-muted">{sv.text}</p>
-            <Link href="#demo-form" className="inline-flex items-center gap-1.5 text-label-lg font-bold text-accent hover:underline">
-              {t("Үнийн санал авах", "Request a quote")} <ArrowRight className="h-4 w-4" />
+            <Link href={localize(lang, `/products/services/${sv.slug}`)} aria-label={`${sv.title} · ${t("Танилцуулга үзэх", "View service details")}`} className="inline-flex items-center gap-1.5 text-label-lg font-bold text-accent after:absolute after:inset-0 after:rounded-[inherit] hover:underline">
+              {t("Танилцуулга үзэх", "View service details")} <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </Reveal>
         ))}

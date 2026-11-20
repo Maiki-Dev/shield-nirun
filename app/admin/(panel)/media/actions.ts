@@ -48,11 +48,12 @@ export async function deleteMedia(id: string): Promise<void> {
   const m = await db.media.findUnique({ where: { id } });
   if (!m) return;
   const url = `/media/${m.storedName}`;
-  const [inSettings, inLeaders] = await Promise.all([
+  const [inSettings, inLeaders, inServices] = await Promise.all([
     db.siteSettings.count({ where: { OR: [{ brochureParking: url }, { brochureHoa: url }] } }),
     db.leader.count({ where: { photo: url } }),
+    db.service.count({ where: { images: { has: url } } }),
   ]);
-  if (inSettings || inLeaders) redirect("/admin/media?inuse=1");
+  if (inSettings || inLeaders || inServices) redirect("/admin/media?inuse=1");
   await db.media.delete({ where: { id } });
   await fs.rm(path.join(UPLOAD_DIR, m.storedName), { force: true });
   publishSite();

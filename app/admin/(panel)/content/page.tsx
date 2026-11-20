@@ -11,7 +11,7 @@ export const metadata = { title: "Контент" };
 
 const TABS: { key: Kind; label: string; hint: string }[] = [
   { key: "leader", label: "Удирдлага", hint: "Нүүр болон “Бидний тухай” хуудасны удирдлагын хэсэг. Дарааллаар нь харагдана." },
-  { key: "service", label: "Үйлчилгээ", hint: "“Бүтээгдэхүүн, үйлчилгээ” хуудасны “Үйлчилгээнүүд” хэсэг." },
+  { key: "service", label: "Үйлчилгээ", hint: "Үйлчилгээний танилцуулгын зураг сонгохын өмнө “Файл & зураг” хэсэгт байршуулна." },
   { key: "faq", label: "Түгээмэл асуулт", hint: "“Бүтээгдэхүүн” хуудасны асуулт, хариулт. “Shield+” гэж тэмдэглэсэн нь нээлт хүртэл нуугдана." },
 ];
 
@@ -50,12 +50,20 @@ export default async function ContentPage({ searchParams }: { searchParams: { ta
       },
     ];
   } else if (tab.key === "service") {
-    rows = await db.service.findMany({ orderBy: { sortOrder: "asc" } });
+    const [services, media] = await Promise.all([
+      db.service.findMany({ orderBy: { sortOrder: "asc" } }),
+      db.media.findMany({ where: { mime: { startsWith: "image/" } }, orderBy: { createdAt: "desc" }, select: { storedName: true, original: true } }),
+    ]);
+    rows = services.map(({ images, ...service }) => ({ ...service, image1: images[0], image2: images[1], image3: images[2] }));
+    const photoOptions = [{ value: "", label: "— Зураггүй —" }, ...media.map((m) => ({ value: `/media/${m.storedName}`, label: m.original }))];
     fields = [
       { name: "titleMn", label: "Гарчиг (монгол)", type: "text", max: 80 },
       { name: "titleEn", label: "Title (English)", type: "text", max: 80 },
       { name: "textMn", label: "Тайлбар (монгол)", type: "textarea", max: 400 },
       { name: "textEn", label: "Description (English)", type: "textarea", max: 400 },
+      { name: "image1", label: "Танилцуулгын зураг 1", type: "select", options: photoOptions },
+      { name: "image2", label: "Танилцуулгын зураг 2", type: "select", options: photoOptions },
+      { name: "image3", label: "Танилцуулгын зураг 3", type: "select", options: photoOptions },
       { name: "icon", label: "Дүрс", type: "select", options: Object.entries(SERVICE_ICONS).map(([value, v]) => ({ value, label: v.label })) },
       { name: "visible", label: "Сайт дээр харуулах", type: "checkbox" },
     ];

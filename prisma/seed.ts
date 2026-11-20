@@ -10,7 +10,6 @@ import { leaders } from "../lib/content/people";
 import { productsContent } from "../lib/content/products";
 
 const db = new PrismaClient();
-const SERVICE_KEYS = ["cctv", "door", "drone", "shield", "network", "wrench"]; // same order as the current list
 
 async function main() {
   await db.siteSettings.upsert({
@@ -53,7 +52,7 @@ async function main() {
     const mn = productsContent("mn").SERVICES;
     const en = productsContent("en").SERVICES;
     await db.service.createMany({
-      data: mn.map((s, i) => ({ icon: SERVICE_KEYS[i] ?? "shield", titleMn: s.title, titleEn: en[i].title, textMn: s.text, textEn: en[i].text, sortOrder: i })),
+      data: mn.map((s, i) => ({ icon: s.key, titleMn: s.title, titleEn: en[i].title, textMn: s.text, textEn: en[i].text, sortOrder: i })),
     });
   }
 

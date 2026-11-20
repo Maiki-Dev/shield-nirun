@@ -14,6 +14,7 @@ const s = (max: number) => z.string().trim().min(1, "Хоосон байж бо�
 const bool = z.preprocess((v) => v === "on" || v === "true", z.boolean());
 // Local site paths only (/images/…, /media/…) so editors can't hot-link arbitrary hosts.
 const sitePath = z.string().trim().regex(/^\/(images|media|files)\/[\w./-]+$/, "Зөвхөн сайтын зураг (/images/… эсвэл /media/…)");
+const serviceImage = z.string().regex(/^\/media\/[\w.-]+$/, "“Файл & зураг” хэсгээс зураг сонгоно уу.").or(z.literal("")).default("");
 
 const schemas = {
   leader: z.object({
@@ -22,7 +23,13 @@ const schemas = {
     parentId: z.string().trim().max(40).optional().transform((v) => v || null),
     visible: bool,
   }),
-  service: z.object({ icon: z.string().refine((k) => k in SERVICE_ICONS), titleMn: s(80), titleEn: s(80), textMn: s(400), textEn: s(400), visible: bool }),
+  service: z.object({
+    icon: z.string().refine((k) => k in SERVICE_ICONS),
+    titleMn: s(80), titleEn: s(80), textMn: s(400), textEn: s(400), visible: bool,
+    image1: serviceImage, image2: serviceImage, image3: serviceImage,
+  }).transform(({ image1, image2, image3, ...service }) => ({
+    ...service, images: Array.from(new Set([image1, image2, image3].filter(Boolean))),
+  })),
   faq: z.object({ questionMn: s(300), questionEn: s(300), answerMn: s(2000), answerEn: s(2000), shieldPlus: bool, visible: bool }),
   position: z.object({ titleMn: s(120), titleEn: s(120), descriptionMn: s(3000), descriptionEn: s(3000), open: bool }),
 };
