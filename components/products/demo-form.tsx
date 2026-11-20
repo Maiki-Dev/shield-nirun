@@ -14,6 +14,7 @@ const CURRENT = [
   { value: "access", mn: "Нэвтрэх хяналт", en: "Access control" },
   { value: "drone", mn: "Дрон хяналт", en: "Drone monitoring" },
   { value: "guard", mn: "Биет хамгаалалт", en: "On-site security" },
+  { value: "software", mn: "Программ хангамж ба веб хөгжүүлэлт", en: "Software & web development" },
 ] as const;
 const SHIELD_PLUS_ITEMS = [
   { value: "parking", mn: "ANPR Зогсоол", en: "ANPR parking" },

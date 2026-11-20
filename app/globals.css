@@ -196,30 +196,29 @@
   .sn-bar { animation: sn-bar 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate; transform-origin: left; }
 
 
-  @supports (animation-timeline: view()) {
-    .sn-rv, .sn-rv-left, .sn-zoom, .sn-tilt-a, .sn-tilt-b {
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      will-change: transform, opacity;
-      backface-visibility: hidden;
-    }
-    .sn-rv { animation-name: sn-rise; animation-range: entry 0 entry 180px; }
-    .sn-rv-2 { animation-range: entry 30px entry 210px; }
-    .sn-rv-3 { animation-range: entry 60px entry 240px; }
-    .sn-rv-4 { animation-range: entry 90px entry 270px; }
-    .sn-rv-left { animation-name: sn-left; animation-range: entry 0 entry 200px; }
-    .sn-tilt-a { animation-name: sn-tilt-a; animation-range: entry 0 entry 220px; }
-    .sn-tilt-b { animation-name: sn-tilt-b; animation-range: entry 40px entry 260px; }
-    .sn-zoom { animation-name: sn-zoom; animation-range: entry 0 entry 240px; }
+  /* Reveal-on-scroll: plays ONCE when the element enters the viewport (time-based, eased).
+     It is not scrubbed by the scroll position, so cards never wobble back and forth while scrolling.
+     `data-in` is set by <SmoothScroll/>; `data-sn-js` on <html> is set by an inline script in the layout,
+     so without JS the content is simply visible. */
+  html[data-sn-js] :is(.sn-rv, .sn-rv-left, .sn-zoom, .sn-tilt-a, .sn-tilt-b):not([data-in]) { opacity: 0; }
+  :is(.sn-rv, .sn-rv-left, .sn-zoom, .sn-tilt-a, .sn-tilt-b)[data-in] {
+    animation-duration: 0.7s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: backwards;
   }
+  .sn-rv[data-in] { animation-name: sn-rise; }
+  .sn-rv-2[data-in] { animation-delay: 0.07s; }
+  .sn-rv-3[data-in] { animation-delay: 0.14s; }
+  .sn-rv-4[data-in] { animation-delay: 0.21s; }
+  .sn-rv-left[data-in] { animation-name: sn-left; }
+  .sn-tilt-a[data-in] { animation-name: sn-tilt-a; }
+  .sn-tilt-b[data-in] { animation-name: sn-tilt-b; animation-delay: 0.1s; }
+  .sn-zoom[data-in] { animation-name: sn-zoom; animation-duration: 0.9s; }
 }
 
-/* Static end-state of the tilt cards when scroll timelines are unavailable. */
-@supports not (animation-timeline: view()) {
-  .sn-tilt-a { transform: rotate(-3deg); }
-  .sn-tilt-b { transform: rotate(2deg); }
-}
+/* Resting state of the tilt cards. */
+.sn-tilt-a { transform: rotate(-3deg); }
+.sn-tilt-b { transform: rotate(2deg); }
 
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {

@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "react";
 type Variant = "rise" | "left" | "zoom" | "tilt-a" | "tilt-b";
 
 interface ReveaANPRops extends HTMLAttributes<HTMLDivElement> {
-  /** Stagger in seconds (legacy API) — mapped to 4 scroll-range stages. */
+  /** Stagger in seconds (legacy API) — mapped to 4 delay stages. */
   delay?: number;
   variant?: Variant;
 }
@@ -17,8 +17,8 @@ const VARIANT: Record<Variant, string> = {
 };
 
 /**
- * Scroll-driven reveal (CSS `animation-timeline: view()`), no JS.
- * Browsers without support — or users with reduced motion — simply see the content.
+ * Reveal-on-scroll: eases in once when it enters the viewport (see globals.css + <SmoothScroll/>).
+ * Without JS — or for users with reduced motion — the content is simply visible.
  */
 export function Reveal({ delay = 0, variant = "rise", className = "", children, ...rest }: ReveaANPRops) {
   const stage = Math.min(4, 1 + Math.round(delay / 0.06));

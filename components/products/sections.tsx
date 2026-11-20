@@ -50,6 +50,12 @@ function Hero({ lang }: P) {
         >
           {t("Үйлчилгээнүүд үзэх", "View services")} <ArrowDown className="h-4 w-4" />
         </Link>
+        <Link
+          href={localize(lang, "/products/shield-plus")}
+          className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-label-lg font-bold text-brand-light transition-colors hover:bg-white/10 hover:text-white"
+        >
+          SHIELD<span className="text-[#E5243B]">+</span> {t("танилцуулга", "overview")} <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
     </PageHero>
   );

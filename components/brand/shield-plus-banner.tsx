@@ -51,10 +51,10 @@ export function ShieldPlusBanner({ lang }: { lang: Lang }) {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="#solutions"
+                href={localize(lang, "/products/shield-plus")}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-label-lg font-bold text-navy transition-colors hover:bg-navy hover:text-white"
               >
-                {t("Шийдлүүдийг үзэх", "See the solutions")} <ArrowRight className="h-4 w-4" />
+                {t("Shield+ танилцуулга", "Explore Shield+")} <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href={localize(lang, "/contact")}

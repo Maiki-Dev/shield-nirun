@@ -49,6 +49,8 @@ export default function LocaleLayout({ children, params }: { children: React.Rea
   return (
     <html lang={lang} suppressHydrationWarning className={manrope.variable}>
       <body>
+        {/* Lets CSS hide reveal-on-scroll elements before first paint only when JS is running. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.setAttribute('data-sn-js','')" }} />
         <Script id="google-tag-init" strategy="beforeInteractive">
           {`
             window.dataLayer = window.dataLayer || [];

@@ -79,7 +79,7 @@ export function aboutContent(lang: Lang) {
     },
     {
       icon: ScanFace, title: t("Нэвтрэх хяналт", "Access control"),
-      text: t("Хаалга, турникет, зогсоолын хандалтыг автоматжуулж, бүртгэлжүүлнэ.", "Automates and logs access to doors, turnstiles and parking."),
+      text: t("Хаалга, зогсоолын хандалтыг автоматжуулж, бүртгэлжүүлнэ.", "Automates and logs access to doors, turnstiles and parking."),
       points: [t("Царай, карт, QR нэвтрэлт", "Face, card and QR entry"), t("Зочны түр зөвшөөрөл", "Temporary visitor passes")],
     },
   ];

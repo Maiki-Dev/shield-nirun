@@ -11,6 +11,7 @@ export const navItems = (lang: Lang): NavItem[] => {
   return [
     { label: t("Нүүр хуудас", "Home"), href: "/" },
     { label: t("Бүтээгдэхүүн", "Products"), href: "/products" },
+    { label: "Shield+", href: "/products/shield-plus" },
     {
       label: t("Бидний тухай", "About us"),
       href: "/about",
@@ -53,6 +54,7 @@ export const address = (lang: Lang) => {
 export const footerSolutions = (lang: Lang): NavItem[] => {
   const t = tr(lang);
   return [
+    { label: "Shield+", href: "/products/shield-plus" },
     { label: t("Ухаалаг зогсоолын систем", "Smart parking system"), href: "/products/smart-parking" },
     { label: t("SHIELD+ СӨХ систем", "SHIELD+ HOA system"), href: "/products/smart-hoa" },
     { label: t("AI камер & дрон", "AI cameras & drones"), href: "/#solutions" },
@@ -65,7 +67,7 @@ export const footerServices = (lang: Lang): NavItem[] => {
   const t = tr(lang);
   return [
     { label: t("Камер суурилуулалт", "Camera installation"), href: "/products#services" },
-    { label: t("Нэвтрэх хяналт & турникет", "Access control & turnstiles"), href: "/products#services" },
+    { label: t("Нэвтрэх хяналт & шалгалт", "Access control & turnstiles"), href: "/products#services" },
     { label: t("Дрон хяналт", "Drone monitoring"), href: "/products#services" },
     { label: t("Биет харуул хамгаалалт", "On-site security guards"), href: "/products#services" },
   ];
